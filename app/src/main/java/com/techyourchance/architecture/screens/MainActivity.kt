@@ -9,32 +9,22 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +38,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,8 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -69,13 +56,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import com.techyourchance.architecture.BuildConfig
+import com.techyourchance.architecture.R
 import com.techyourchance.architecture.common.database.FavoriteQuestionDao
 import com.techyourchance.architecture.common.database.MyRoomDatabase
-import com.techyourchance.architecture.R
 import com.techyourchance.architecture.common.networking.StackoverflowApi
 import com.techyourchance.architecture.question.FavoriteQuestion
-import com.techyourchance.architecture.question.QuestionSchema
-import com.techyourchance.architecture.question.QuestionWithBodySchema
+import com.techyourchance.architecture.screens.favoritequestions.FavoriteQuestionsScreen
+import com.techyourchance.architecture.screens.questiondetails.QuestionDetailsScreen
+import com.techyourchance.architecture.screens.questionslist.QuestionsListScreen
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -397,96 +386,6 @@ private fun MyContent(
 }
 
 @Composable
-fun FavoriteQuestionsScreen(
-    favoriteQuestionDao: FavoriteQuestionDao,
-    navController: NavHostController,
-) {
-    val favorites = favoriteQuestionDao.observe().collectAsState(initial = listOf())
-
-    if (favorites.value.isNotEmpty()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 5.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            contentPadding = PaddingValues(top = 10.dp, bottom = 10.dp)
-        ) {
-            items(favorites.value.size) { index ->
-                val favoriteQuestion = favorites.value[index]
-                QuestionItem(
-                    questionId = favoriteQuestion.id,
-                    questionTitle = favoriteQuestion.title,
-                    onQuestionClicked = {
-                        navController.navigate(
-                            Route.QuestionDetailsScreen.routeName
-                                .replace("{questionId}", favoriteQuestion.id)
-                                .replace("{questionTitle}", favoriteQuestion.title)
-                        )
-                    },
-                )
-                if (index < favorites.value.size - 1) {
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .padding(top = 20.dp),
-                        thickness = 2.dp
-                    )
-                }
-            }
-        }
-    } else {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                textAlign = TextAlign.Center,
-                text = "No favorites",
-            )
-        }
-
-    }
-
-}
-
-@Composable
-fun QuestionsListScreen(
-    stackoverflowApi: StackoverflowApi,
-    onQuestionClicked: (String, String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-
-    var questions by remember { mutableStateOf<List<QuestionSchema>>(listOf()) }
-
-    LaunchedEffect(Unit) {
-        questions = stackoverflowApi.fetchLastActiveQuestions(20)!!.questions
-    }
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 5.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(top = 10.dp, bottom = 10.dp)
-    ) {
-        items(questions.size) { index ->
-            val question = questions[index]
-            QuestionItem(
-                questionId = question.id,
-                questionTitle = question.title,
-                onQuestionClicked = { onQuestionClicked(question.id, question.title) },
-            )
-            if (index < questions.size - 1) {
-                HorizontalDivider(
-                    modifier = Modifier
-                        .padding(top = 20.dp),
-                    thickness = 2.dp
-                )
-            }
-        }
-    }
-}
-
-@Composable
 fun QuestionItem(
     questionId: String,
     questionTitle: String,
@@ -512,78 +411,5 @@ fun QuestionItem(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
-    }
-}
-
-@Composable
-fun QuestionDetailsScreen(
-    questionId: String,
-    stackoverflowApi: StackoverflowApi,
-    favoriteQuestionDao: FavoriteQuestionDao,
-    navController: NavHostController,
-) {
-    var questionDetails by remember { mutableStateOf<QuestionWithBodySchema?>(null) }
-    var isError by remember { mutableStateOf(false) }
-
-    LaunchedEffect(questionId) {
-        try {
-            questionDetails = stackoverflowApi.fetchQuestionDetails(questionId)!!.questions[0]
-        } catch (e: Exception) {
-            isError = true
-        }
-    }
-
-    val isFavorite by favoriteQuestionDao.observeById(questionId).collectAsState(initial = null)
-
-    val scrollState = rememberScrollState()
-
-    if (questionDetails != null) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            questionDetails?.let {
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                val spannedTitle: Spanned = Html.fromHtml(it.title, Html.FROM_HTML_MODE_LEGACY)
-                Text(
-                    text = spannedTitle.toString(),
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                val spannedBody: Spanned = Html.fromHtml(it.body, Html.FROM_HTML_MODE_LEGACY)
-                Text(
-                    text = spannedBody.toString(),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
-    }
-
-    if (isError) {
-        AlertDialog(
-            text = {
-                Text("Ooops, something went wrong")
-            },
-            onDismissRequest = {
-                navController.popBackStack()
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        navController.popBackStack()
-                    }
-                ) {
-                    Text("OK")
-                }
-            },
-        )
     }
 }
