@@ -16,8 +16,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.techyourchance.architecture.common.database.FavoriteQuestionDao
-import com.techyourchance.architecture.screens.QuestionItem
 import com.techyourchance.architecture.screens.Route
+import com.techyourchance.architecture.screens.common.composables.QuestionItem
 
 @Composable
 fun FavoriteQuestionsScreen(

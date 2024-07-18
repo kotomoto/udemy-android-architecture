@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.techyourchance.architecture.common.networking.StackoverflowApi
 import com.techyourchance.architecture.question.QuestionSchema
-import com.techyourchance.architecture.screens.QuestionItem
+import com.techyourchance.architecture.screens.common.composables.QuestionItem
 
 @Composable
 fun QuestionsListScreen(
