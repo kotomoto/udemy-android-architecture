@@ -142,7 +142,7 @@ private fun MainScreenContent(
                     }
                     composable(route = Route.QuestionDetailsScreen().routeName) { backStackEntry ->
                         QuestionDetailsScreen(
-                            questionId = backStackEntry.arguments?.getString("questionId")!!,
+                            questionId = (screensNavigator.currentRoute.collectAsState().value as Route.QuestionDetailsScreen).questionId,
                             stackoverflowApi = stackoverflowApi,
                             favoriteQuestionDao = favoriteQuestionDao,
                             onError = {
@@ -168,7 +168,7 @@ private fun MainScreenContent(
                     }
                     composable(route = Route.QuestionDetailsScreen().routeName) { backStackEntry ->
                         QuestionDetailsScreen(
-                            questionId = backStackEntry.arguments?.getString("questionId")!!,
+                            questionId = (screensNavigator.currentRoute.collectAsState().value as Route.QuestionDetailsScreen).questionId,
                             stackoverflowApi = stackoverflowApi,
                             favoriteQuestionDao = favoriteQuestionDao,
                             onError = {
