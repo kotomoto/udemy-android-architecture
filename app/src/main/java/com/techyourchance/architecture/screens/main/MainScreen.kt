@@ -44,7 +44,7 @@ fun MainScreen(
     val isRootRoute = screensNavigator.isRootRoute.collectAsState()
 
     val isShowFavoriteButton = screensNavigator.currentRoute.map { route ->
-        route == Route.QuestionDetailsScreen
+        route is Route.QuestionDetailsScreen
     }.collectAsState(false)
 
     val arguments = screensNavigator.arguments.collectAsState()
@@ -135,15 +135,11 @@ private fun MainScreenContent(
                         QuestionsListScreen(
                             stackoverflowApi = stackoverflowApi,
                             onQuestionClicked = { clickedQuestionId, clickedQuestionTitle ->
-                                mainNestedNavController.navigate(
-                                    Route.QuestionDetailsScreen.routeName
-                                        .replace("{questionId}", clickedQuestionId)
-                                        .replace("{questionTitle}", clickedQuestionTitle)
-                                )
+                                screensNavigator.toRoute(Route.QuestionDetailsScreen(clickedQuestionId, clickedQuestionTitle))
                             },
                         )
                     }
-                    composable(route = Route.QuestionDetailsScreen.routeName) { backStackEntry ->
+                    composable(route = Route.QuestionDetailsScreen().routeName) { backStackEntry ->
                         QuestionDetailsScreen(
                             questionId = backStackEntry.arguments?.getString("questionId")!!,
                             stackoverflowApi = stackoverflowApi,
@@ -165,15 +161,11 @@ private fun MainScreenContent(
                         FavoriteQuestionsScreen(
                             favoriteQuestionDao = favoriteQuestionDao,
                             onQuestionClicked = { favoriteQuestionId, favoriteQuestionTitle ->
-                                favoritesNestedNavController.navigate(
-                                    Route.QuestionDetailsScreen.routeName
-                                        .replace("{questionId}", favoriteQuestionId)
-                                        .replace("{questionTitle}", favoriteQuestionTitle)
-                                )
+                                screensNavigator.toRoute(Route.QuestionDetailsScreen(favoriteQuestionId, favoriteQuestionTitle))
                             },
                         )
                     }
-                    composable(route = Route.QuestionDetailsScreen.routeName) { backStackEntry ->
+                    composable(route = Route.QuestionDetailsScreen().routeName) { backStackEntry ->
                         QuestionDetailsScreen(
                             questionId = backStackEntry.arguments?.getString("questionId")!!,
                             stackoverflowApi = stackoverflowApi,

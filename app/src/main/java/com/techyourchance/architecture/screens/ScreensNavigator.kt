@@ -52,7 +52,7 @@ class ScreensNavigator {
                     Route.MainTab.routeName -> Route.MainTab
                     Route.FavoritesTab.routeName -> Route.FavoritesTab
                     Route.QuestionsListScreen.routeName -> Route.QuestionsListScreen
-                    Route.QuestionDetailsScreen.routeName -> Route.QuestionDetailsScreen
+                    Route.QuestionDetailsScreen().routeName -> Route.QuestionDetailsScreen()
                     Route.FavoriteQuestionsScreen.routeName -> Route.FavoriteQuestionsScreen
                     null -> null
                     else -> throw RuntimeException("Unsupported route: $routeName")
@@ -85,6 +85,10 @@ class ScreensNavigator {
             launchSingleTop = true
             restoreState = true
         }
+    }
+
+    fun toRoute(route: Route) {
+        nestedNavController.navigate(route.navCommand)
     }
 
     companion object {
