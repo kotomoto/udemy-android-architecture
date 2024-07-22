@@ -1,6 +1,5 @@
 package com.techyourchance.architecture.screens
 
-import android.os.Bundle
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +22,6 @@ class ScreensNavigator {
     val currentBottomTab = MutableStateFlow<BottomTab?>(null)
     val currentRoute = MutableStateFlow<Route?>(null)
     val isRootRoute = MutableStateFlow(false)
-    val arguments = MutableStateFlow<Bundle?>(null)
 
     fun setParentNavController(navController: NavHostController) {
         parentNavController = navController
@@ -52,14 +50,19 @@ class ScreensNavigator {
                     Route.MainTab.routeName -> Route.MainTab
                     Route.FavoritesTab.routeName -> Route.FavoritesTab
                     Route.QuestionsListScreen.routeName -> Route.QuestionsListScreen
-                    Route.QuestionDetailsScreen().routeName -> Route.QuestionDetailsScreen()
+                    Route.QuestionDetailsScreen().routeName -> {
+                        val args = backStackEntry.arguments
+                        Route.QuestionDetailsScreen(
+                            args?.getString("questionId")!!,
+                            args?.getString("questionTitle")!!,
+                        )
+                    }
                     Route.FavoriteQuestionsScreen.routeName -> Route.FavoriteQuestionsScreen
                     null -> null
                     else -> throw RuntimeException("Unsupported route: $routeName")
                 }
                 currentRoute.value = route
                 isRootRoute.value = route == Route.QuestionsListScreen
-                arguments.value = backStackEntry.arguments
             }.collect()
         }
     }

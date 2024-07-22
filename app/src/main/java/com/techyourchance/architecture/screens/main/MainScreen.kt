@@ -41,18 +41,19 @@ fun MainScreen(
 
     val currentBottomTab = screensNavigator.currentBottomTab.collectAsState()
 
+    val currentRoute = screensNavigator.currentRoute.collectAsState()
+
     val isRootRoute = screensNavigator.isRootRoute.collectAsState()
 
     val isShowFavoriteButton = screensNavigator.currentRoute.map { route ->
         route is Route.QuestionDetailsScreen
     }.collectAsState(false)
 
-    val arguments = screensNavigator.arguments.collectAsState()
-    val questionIdAndTitle = remember(arguments.value) {
-        if (isShowFavoriteButton.value) {
+    val questionIdAndTitle = remember(currentRoute.value) {
+        if (currentRoute.value is Route.QuestionDetailsScreen) {
             Pair(
-                arguments.value?.getString("questionId")!!,
-                arguments.value?.getString("questionTitle")!!,
+                (currentRoute.value as Route.QuestionDetailsScreen).questionId,
+                (currentRoute.value as Route.QuestionDetailsScreen).questionTitle,
             )
         } else {
             Pair("", "")
