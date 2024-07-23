@@ -25,6 +25,7 @@ import com.techyourchance.architecture.common.database.FavoriteQuestionDao
 import com.techyourchance.architecture.common.networking.StackoverflowApi
 import com.techyourchance.architecture.screens.Route
 import com.techyourchance.architecture.screens.ScreensNavigator
+import com.techyourchance.architecture.screens.favoritequestions.FavoriteQuestionsPresenter
 import com.techyourchance.architecture.screens.favoritequestions.FavoriteQuestionsScreen
 import com.techyourchance.architecture.screens.questiondetails.QuestionDetailsScreen
 import com.techyourchance.architecture.screens.questionslist.QuestionsListPresenter
@@ -122,8 +123,12 @@ private fun MainScreenContent(
             .padding(padding)
             .padding(horizontal = 12.dp),
     ) {
-        val presenter = remember {
+        val questionsListPresenter = remember {
             QuestionsListPresenter()
+        }
+
+        val favoriteQuestionsPresenter = remember {
+            FavoriteQuestionsPresenter(favoriteQuestionDao)
         }
 
         NavHost(
@@ -139,7 +144,7 @@ private fun MainScreenContent(
                 NavHost(navController = mainNestedNavController, startDestination = Route.QuestionsListScreen.routeName) {
                     composable(route = Route.QuestionsListScreen.routeName) {
                         QuestionsListScreen(
-                            presenter = presenter,
+                            presenter = questionsListPresenter,
                             onQuestionClicked = { clickedQuestionId, clickedQuestionTitle ->
                                 screensNavigator.toRoute(Route.QuestionDetailsScreen(clickedQuestionId, clickedQuestionTitle))
                             },
@@ -168,7 +173,7 @@ private fun MainScreenContent(
                 NavHost(navController = favoritesNestedNavController, startDestination = Route.FavoriteQuestionsScreen.routeName) {
                     composable(route = Route.FavoriteQuestionsScreen.routeName) {
                         FavoriteQuestionsScreen(
-                            favoriteQuestionDao = favoriteQuestionDao,
+                            presenter = favoriteQuestionsPresenter,
                             onQuestionClicked = { favoriteQuestionId, favoriteQuestionTitle ->
                                 screensNavigator.toRoute(Route.QuestionDetailsScreen(favoriteQuestionId, favoriteQuestionTitle))
                             },
