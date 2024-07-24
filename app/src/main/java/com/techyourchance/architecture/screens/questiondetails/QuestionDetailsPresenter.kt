@@ -3,13 +3,12 @@ package com.techyourchance.architecture.screens.questiondetails
 import com.techyourchance.architecture.common.database.FavoriteQuestionDao
 import com.techyourchance.architecture.common.networking.StackoverflowApi
 import com.techyourchance.architecture.question.QuestionWithBodySchema
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class QuestionDetailsPresenter(
     private val stackoverflowApi: StackoverflowApi,
@@ -22,12 +21,10 @@ class QuestionDetailsPresenter(
         data object Error : QuestionDetailsResult()
     }
 
-    private val scope = CoroutineScope(Dispatchers.Main.immediate)
-
     val questionDetails = MutableStateFlow<QuestionDetailsResult>(QuestionDetailsResult.None)
 
-    fun fetchQuestionDetails(questionId: String) {
-        scope.launch {
+    suspend fun fetchQuestionDetails(questionId: String) {
+        withContext(Dispatchers.Main.immediate) {
             combine(
                 flow = flow {
                     emit(stackoverflowApi.fetchQuestionDetails(questionId))
