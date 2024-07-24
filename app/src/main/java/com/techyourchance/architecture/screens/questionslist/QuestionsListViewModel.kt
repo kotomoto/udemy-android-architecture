@@ -13,7 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-class QuestionsListViewModel: ViewModel() {
+class QuestionsListViewModel : ViewModel() {
 
     private val retrofit by lazy {
         val httpClient = OkHttpClient.Builder().run {
@@ -38,15 +38,29 @@ class QuestionsListViewModel: ViewModel() {
 
     val lastActiveQuestions = MutableStateFlow<List<QuestionSchema>>(emptyList())
 
-    suspend fun fetchLastActiveQuestions() {
+    private var lastNetworkRequestNano = 0L
+
+    suspend fun fetchLastActiveQuestions(forceUpdate: Boolean = false) {
         withContext(Dispatchers.Main.immediate) {
-            val questions = stackoverflowApi.fetchLastActiveQuestions(20)!!.questions
-            lastActiveQuestions.value = questions
+            if (forceUpdate || hasEnoughTimePassed()) {
+                Log.i("QuestionsListViewModel", "launched fetchLastActiveQuestions() request")
+                lastNetworkRequestNano = System.nanoTime()
+                val questions = stackoverflowApi.fetchLastActiveQuestions(20)!!.questions
+                lastActiveQuestions.value = questions
+            }
         }
+    }
+
+    private fun hasEnoughTimePassed(): Boolean {
+        return System.nanoTime() - lastNetworkRequestNano > THROTTLING_MS * 1_000_000
     }
 
     override fun onCleared() {
         super.onCleared()
         Log.i("QuestionsListViewModel", "onCleared()")
+    }
+
+    companion object {
+        const val THROTTLING_MS = 5_000L
     }
 }
