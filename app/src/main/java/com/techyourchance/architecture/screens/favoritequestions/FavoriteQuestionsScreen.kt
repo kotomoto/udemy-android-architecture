@@ -14,15 +14,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.techyourchance.architecture.common.database.FavoriteQuestionDao
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.techyourchance.architecture.screens.common.composables.QuestionItem
 
 @Composable
 fun FavoriteQuestionsScreen(
-    presenter: FavoriteQuestionsPresenter,
+    viewModelFactory: ViewModelProvider.Factory,
+    viewModel: FavoriteQuestionsViewModel = viewModel(factory = viewModelFactory),
     onQuestionClicked: (String, String) -> Unit,
 ) {
-    val favorites = presenter.favorites.collectAsState(initial = listOf())
+    val favorites = viewModel.favorites.collectAsState(initial = listOf())
 
     if (favorites.value.isNotEmpty()) {
         LazyColumn(
@@ -62,5 +64,4 @@ fun FavoriteQuestionsScreen(
         }
 
     }
-
 }
