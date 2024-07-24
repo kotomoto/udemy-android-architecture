@@ -29,7 +29,6 @@ import com.techyourchance.architecture.screens.favoritequestions.FavoriteQuestio
 import com.techyourchance.architecture.screens.favoritequestions.FavoriteQuestionsScreen
 import com.techyourchance.architecture.screens.questiondetails.QuestionDetailsPresenter
 import com.techyourchance.architecture.screens.questiondetails.QuestionDetailsScreen
-import com.techyourchance.architecture.screens.questionslist.QuestionsListPresenter
 import com.techyourchance.architecture.screens.questionslist.QuestionsListScreen
 import kotlinx.coroutines.flow.map
 
@@ -124,10 +123,6 @@ private fun MainScreenContent(
             .padding(padding)
             .padding(horizontal = 12.dp),
     ) {
-        val questionsListPresenter = remember {
-            QuestionsListPresenter()
-        }
-
         val favoriteQuestionsPresenter = remember {
             FavoriteQuestionsPresenter(favoriteQuestionDao)
         }
@@ -153,7 +148,6 @@ private fun MainScreenContent(
                 NavHost(navController = mainNestedNavController, startDestination = Route.QuestionsListScreen.routeName) {
                     composable(route = Route.QuestionsListScreen.routeName) {
                         QuestionsListScreen(
-                            presenter = questionsListPresenter,
                             onQuestionClicked = { clickedQuestionId, clickedQuestionTitle ->
                                 screensNavigator.toRoute(Route.QuestionDetailsScreen(clickedQuestionId, clickedQuestionTitle))
                             },

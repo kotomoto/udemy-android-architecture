@@ -11,20 +11,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.techyourchance.architecture.screens.common.composables.QuestionItem
 
 @Composable
 fun QuestionsListScreen(
-    presenter: QuestionsListPresenter,
+    viewModel: QuestionsListViewModel = viewModel(),
     onQuestionClicked: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
-    val questions = presenter.lastActiveQuestions.collectAsState()
+    val questions = viewModel.lastActiveQuestions.collectAsState()
 
     LaunchedEffect(Unit) {
         if (questions.value.isEmpty()) {
-            presenter.fetchLastActiveQuestions()
+            viewModel.fetchLastActiveQuestions()
         }
     }
 
