@@ -19,22 +19,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun QuestionDetailsScreen(
+    viewModelFactory: ViewModelProvider.Factory,
     questionId: String,
-    presenter: QuestionDetailsPresenter,
+    viewModel: QuestionDetailsViewModel = viewModel(factory = viewModelFactory),
     onError: () -> Unit,
 ) {
-    val questionDetailsResult = presenter.questionDetails.collectAsState().value
+    val questionDetailsResult = viewModel.questionDetails.collectAsState().value
 
     LaunchedEffect(questionId) {
-        presenter.fetchQuestionDetails(questionId)
+        viewModel.fetchQuestionDetails(questionId)
     }
 
     val scrollState = rememberScrollState()
 
-    if (questionDetailsResult is QuestionDetailsPresenter.QuestionDetailsResult.Success) {
+    if (questionDetailsResult is QuestionDetailsViewModel.QuestionDetailsResult.Success) {
         Column(
             modifier = Modifier
                 .verticalScroll(scrollState),
@@ -61,7 +64,7 @@ fun QuestionDetailsScreen(
         }
     }
 
-    if (questionDetailsResult is QuestionDetailsPresenter.QuestionDetailsResult.Error) {
+    if (questionDetailsResult is QuestionDetailsViewModel.QuestionDetailsResult.Error) {
         AlertDialog(
             text = {
                 Text("Ooops, something went wrong")
