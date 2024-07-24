@@ -159,7 +159,7 @@ private fun MainScreenContent(
                             },
                         )
                     }
-                    composable(route = Route.QuestionDetailsScreen().routeName) { backStackEntry ->
+                    composable(route = Route.QuestionDetailsScreen().routeName) {
                         val questionId = remember {
                             (screensNavigator.currentRoute.value as Route.QuestionDetailsScreen).questionId
                         }
@@ -186,7 +186,7 @@ private fun MainScreenContent(
                             },
                         )
                     }
-                    composable(route = Route.QuestionDetailsScreen().routeName) { backStackEntry ->
+                    composable(route = Route.QuestionDetailsScreen().routeName) {
                         val questionId = remember {
                             (screensNavigator.currentRoute.value as Route.QuestionDetailsScreen).questionId
                         }
