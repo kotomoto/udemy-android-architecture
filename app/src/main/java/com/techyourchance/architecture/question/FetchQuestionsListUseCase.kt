@@ -35,14 +35,19 @@ class FetchQuestionsListUseCase {
 
     private var lastNetworkRequestNano = 0L
 
-    private var questions: List<QuestionSchema> = emptyList()
+    private var questions: List<Question> = emptyList()
 
-    suspend fun fetchLastActiveQuestions(): List<QuestionSchema> {
+    suspend fun fetchLastActiveQuestions(): List<Question> {
         return withContext(Dispatchers.IO) {
             if (hasEnoughTimePassed()) {
                 Log.i("QuestionsListViewModel", "launched fetchLastActiveQuestions() request")
                 lastNetworkRequestNano = System.nanoTime()
-                questions = stackoverflowApi.fetchLastActiveQuestions(20)!!.questions
+                questions = stackoverflowApi.fetchLastActiveQuestions(20)!!.questions.map { questionSchema ->
+                    Question(
+                        questionSchema.id,
+                        questionSchema.title,
+                    )
+                }
                 questions
             } else {
                 questions
