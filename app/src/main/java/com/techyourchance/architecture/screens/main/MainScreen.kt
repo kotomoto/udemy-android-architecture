@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.techyourchance.architecture.common.database.FavoriteQuestionDao
 import com.techyourchance.architecture.common.networking.StackoverflowApi
+import com.techyourchance.architecture.question.ObserveQuestionDetailsUseCase
 import com.techyourchance.architecture.screens.Route
 import com.techyourchance.architecture.screens.ScreensNavigator
 import com.techyourchance.architecture.screens.favoritequestions.FavoriteQuestionsScreen
@@ -125,7 +126,10 @@ private fun MainScreenContent(
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = when {
             modelClass.isAssignableFrom(QuestionDetailsViewModel::class.java) -> {
-                QuestionDetailsViewModel(stackoverflowApi, favoriteQuestionDao) as T
+                val observeQuestionDetailsUseCase = ObserveQuestionDetailsUseCase(
+                    stackoverflowApi, favoriteQuestionDao
+                )
+                QuestionDetailsViewModel(observeQuestionDetailsUseCase) as T
             }
 
             modelClass.isAssignableFrom(FavoriteQuestionsViewModel::class.java) -> {

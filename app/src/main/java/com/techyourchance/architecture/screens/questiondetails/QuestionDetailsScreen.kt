@@ -32,7 +32,7 @@ fun QuestionDetailsScreen(
     val questionDetailsResult = viewModel.questionDetails.collectAsState().value
 
     LaunchedEffect(questionId) {
-        viewModel.fetchQuestionDetails(questionId)
+        viewModel.observeQuestionDetails(questionId)
     }
 
     val scrollState = rememberScrollState()

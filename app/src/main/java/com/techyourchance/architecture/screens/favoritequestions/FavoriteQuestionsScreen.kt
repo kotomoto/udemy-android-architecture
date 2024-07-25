@@ -24,7 +24,7 @@ fun FavoriteQuestionsScreen(
     viewModel: FavoriteQuestionsViewModel = viewModel(factory = viewModelFactory),
     onQuestionClicked: (String, String) -> Unit,
 ) {
-    val favorites = viewModel.favorites.collectAsState(initial = listOf())
+    val favorites = viewModel.favoriteQuestions.collectAsState(initial = listOf())
 
     if (favorites.value.isNotEmpty()) {
         LazyColumn(
