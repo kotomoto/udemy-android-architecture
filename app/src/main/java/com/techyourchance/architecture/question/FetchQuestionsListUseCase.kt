@@ -37,9 +37,9 @@ class FetchQuestionsListUseCase {
 
     private var questions: List<QuestionSchema> = emptyList()
 
-    suspend fun fetchLastActiveQuestions(forceUpdate: Boolean = false): List<QuestionSchema> {
+    suspend fun fetchLastActiveQuestions(): List<QuestionSchema> {
         return withContext(Dispatchers.IO) {
-            if (forceUpdate || hasEnoughTimePassed()) {
+            if (hasEnoughTimePassed()) {
                 Log.i("QuestionsListViewModel", "launched fetchLastActiveQuestions() request")
                 lastNetworkRequestNano = System.nanoTime()
                 questions = stackoverflowApi.fetchLastActiveQuestions(20)!!.questions
