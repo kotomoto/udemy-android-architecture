@@ -1,7 +1,7 @@
 package com.techyourchance.architecture.question
 
 import com.techyourchance.architecture.common.database.FavoriteQuestionDao
-import com.techyourchance.architecture.common.networking.StackoverflowApi
+import com.techyourchance.architecture.networking.StackoverflowApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

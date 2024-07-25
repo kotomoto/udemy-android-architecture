@@ -2,7 +2,7 @@ package com.techyourchance.architecture.question
 
 import android.util.Log
 import com.techyourchance.architecture.BuildConfig
-import com.techyourchance.architecture.common.networking.StackoverflowApi
+import com.techyourchance.architecture.networking.StackoverflowApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
