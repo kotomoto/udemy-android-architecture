@@ -15,7 +15,7 @@ class ObserveQuestionDetailsUseCase(
 ) {
 
     sealed class QuestionDetailsResult {
-        data class Success(val questionDetails: QuestionWithBodySchema, val isFavorite: Boolean) : QuestionDetailsResult()
+        data class Success(val questionDetails: QuestionWithBody) : QuestionDetailsResult()
         data object Error : QuestionDetailsResult()
     }
 
@@ -29,8 +29,14 @@ class ObserveQuestionDetailsUseCase(
             ) { questionDetails, favoriteQuestion ->
                 if (questionDetails != null && questionDetails.questions.isNotEmpty()) {
                     QuestionDetailsResult.Success(
-                        questionDetails = questionDetails.questions[0],
-                        isFavorite = favoriteQuestion != null
+                        questionDetails = questionDetails.questions[0].run {
+                            QuestionWithBody(
+                                id = id,
+                                title = title,
+                                body = body,
+                                isFavorite = favoriteQuestion != null
+                            )
+                        },
                     )
                 } else {
                     QuestionDetailsResult.Error

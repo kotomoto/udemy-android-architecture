@@ -3,7 +3,7 @@ package com.techyourchance.architecture.screens.questiondetails
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.techyourchance.architecture.question.ObserveQuestionDetailsUseCase
-import com.techyourchance.architecture.question.QuestionWithBodySchema
+import com.techyourchance.architecture.question.QuestionWithBody
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
@@ -14,7 +14,7 @@ class QuestionDetailsViewModel(
 
     sealed class QuestionDetailsResult {
         data object None : QuestionDetailsResult()
-        data class Success(val questionDetails: QuestionWithBodySchema, val isFavorite: Boolean) : QuestionDetailsResult()
+        data class Success(val questionDetails: QuestionWithBody) : QuestionDetailsResult()
         data object Error : QuestionDetailsResult()
     }
 
@@ -27,7 +27,7 @@ class QuestionDetailsViewModel(
                 .collect { useCaseResult ->
                     val result = when (useCaseResult) {
                         is ObserveQuestionDetailsUseCase.QuestionDetailsResult.Success -> {
-                            QuestionDetailsResult.Success(useCaseResult.questionDetails, useCaseResult.isFavorite)
+                            QuestionDetailsResult.Success(useCaseResult.questionDetails)
                         }
 
                         is ObserveQuestionDetailsUseCase.QuestionDetailsResult.Error -> {
