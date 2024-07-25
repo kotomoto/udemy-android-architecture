@@ -1,8 +1,7 @@
-package com.techyourchance.architecture.question
+package com.techyourchance.architecture.networking
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.techyourchance.architecture.user.UserSchema
 
 @JsonClass(generateAdapter = true)
 data class QuestionSchema(
